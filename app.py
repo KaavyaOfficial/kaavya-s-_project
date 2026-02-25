@@ -19,14 +19,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY", "momentum_fc_secret_key")
-
-# Vercel / Serverless Compatibility
-IS_VERCEL = os.environ.get("VERCEL") == "1"
-if IS_VERCEL:
-    DATABASE = "/tmp/momentum_fc.db"
-else:
-    DATABASE = "momentum_fc.db"
-
+DATABASE = "momentum_fc.db"
 BASE_URL = "https://api.football-data.org/v4"
 # Top Competitions IDs: PL (2021), PD (2014), CL (2001), BL1 (2002), SA (2019), FL1 (2015)
 TOP_COMPETITIONS = "2021,2014,2001,2002,2019,2015"
@@ -331,16 +324,10 @@ def score_predictions():
         
         db.commit()
 
-# Scheduler (Disabled on Vercel/Serverless)
-if not IS_VERCEL:
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(func=poll_live_matches, trigger="interval", seconds=60)
-    scheduler.start()
-else:
-    # On Vercel, we might want to poll once per process start or handle it differently
-    # For now, let's just ensure DB exists
-    with app.app_context():
-        init_db()
+# Scheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=poll_live_matches, trigger="interval", seconds=60)
+scheduler.start()
 
 # Routes
 @app.route('/')
