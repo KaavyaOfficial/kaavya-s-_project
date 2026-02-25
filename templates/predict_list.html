@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 3rem; text-align: center;">
+    <h1 class="text-gradient" style="font-size: 3rem;">Predictor Lounge</h1>
+    <p style="opacity: 0.6; font-weight: 800;">YO, {{ user.username|upper }} // POINTS: {{ user.points }}</p>
+</div>
+
+<!-- Referral Section -->
+<div class="glass" style="padding: 2rem; margin-bottom: 3rem; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1)); border: 1px solid var(--primary);">
+    <h3 style="margin-bottom: 1rem;">Invite Your Squad 🚀</h3>
+    <p style="opacity: 0.8; margin-bottom: 1.5rem;">Share your link and earn <strong>+50 pts</strong> for every new player.</p>
+    <div style="display: flex; gap: 1rem;">
+        <input type="text" value="{{ ref_link }}" readonly 
+               style="flex: 1; padding: 0.8rem; border-radius: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: #94a3b8; font-size: 0.8rem;">
+        <button class="btn glass" onclick="navigator.clipboard.writeText('{{ ref_link }}'); alert('Vibes Copied!')">COPY LINK</button>
+    </div>
+    <div style="margin-top: 1rem; font-size: 0.7rem; opacity: 0.5;">
+        "Join Momentum FC and predict live matches with me!"
+    </div>
+</div>
+
+<h2 style="margin-bottom: 2rem;">Available for Prediction</h2>
+
+{% if not matches %}
+<div class="glass" style="padding: 4rem; text-align: center;">
+    <p style="opacity: 0.6;">No matches currently open for prediction. Check back soon!</p>
+</div>
+{% else %}
+<div class="match-grid">
+    {% for match in matches %}
+    <div class="glass match-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <span class="badge" style="background: rgba(var(--primary), 0.1); color: var(--primary); font-size: 0.6rem;">
+                MATCH #{{ match.id }}
+            </span>
+            {% if match.status in ("LIVE", "IN_PLAY") %}
+            <span class="badge badge-live">LIVE</span>
+            {% else %}
+            <span class="badge" style="background: rgba(255,255,255,0.1)">UPCOMING</span>
+            {% endif %}
+        </div>
+
+        <form action="{{ url_for('predict_page') }}" method="POST">
+            <input type="hidden" name="match_id" value="{{ match.id }}">
+            
+            <div class="card-teams" style="margin-bottom: 2rem;">
+                <div class="card-team">{{ match.home_team if match.home_team else 'Home' }}</div>
+                <div style="font-weight: 900; opacity: 0.3;">VS</div>
+                <div class="card-team">{{ match.away_team if match.away_team else 'Away' }}</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+                <label class="glass" style="padding: 1rem; text-align: center; cursor: pointer; border-radius: 12px; transition: all 0.2s;">
+                    <input type="radio" name="outcome" value="HOME" required style="margin-bottom: 0.5rem; display: block; margin-inline: auto;">
+                    <span style="font-size: 0.7rem; font-weight: 800;">HOME</span>
+                </label>
+                <label class="glass" style="padding: 1rem; text-align: center; cursor: pointer; border-radius: 12px; transition: all 0.2s;">
+                    <input type="radio" name="outcome" value="DRAW" required style="margin-bottom: 0.5rem; display: block; margin-inline: auto;">
+                    <span style="font-size: 0.7rem; font-weight: 800;">DRAW</span>
+                </label>
+                <label class="glass" style="padding: 1rem; text-align: center; cursor: pointer; border-radius: 12px; transition: all 0.2s;">
+                    <input type="radio" name="outcome" value="AWAY" required style="margin-bottom: 0.5rem; display: block; margin-inline: auto;">
+                    <span style="font-size: 0.7rem; font-weight: 800;">AWAY</span>
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 1.5rem; margin-bottom: 2rem;">
+                <div style="flex: 1;">
+                    <label style="font-size: 0.6rem; font-weight: 900; opacity: 0.5; display: block; margin-bottom: 0.5rem;">HOME GOALS</label>
+                    <input type="number" name="home_goals" value="0" min="0" 
+                           style="width: 100%; padding: 0.8rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: #fff; text-align: center;">
+                </div>
+                <div style="flex: 1;">
+                    <label style="font-size: 0.6rem; font-weight: 900; opacity: 0.5; display: block; margin-bottom: 0.5rem;">AWAY GOALS</label>
+                    <input type="number" name="away_goals" value="0" min="0" 
+                           style="width: 100%; padding: 0.8rem; border-radius: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); color: #fff; text-align: center;">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">LOCK PREDICTION</button>
+        </form>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<style>
+    label:has(input:checked) {
+        background: var(--primary) !important;
+        border-color: var(--primary) !important;
+        color: white !important;
+    }
+</style>
+{% endblock %}

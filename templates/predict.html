@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 3rem; text-align: center;">
+    <h1 class="text-gradient" style="font-size: 3rem;">AI Analysis Center</h1>
+    <p style="opacity: 0.6;">Predicting outcomes with momentum data.</p>
+</div>
+
+<div class="glass" style="padding: 3rem; margin-bottom: 2rem;">
+    <div class="text-center mb-2">
+        <h2 style="font-size: 2.5rem;">{{ match.name }}</h2>
+        <p style="opacity: 0.6;">Current Odds & Probability Distribution</p>
+    </div>
+
+    <div class="prob-container">
+        <div class="prob-box glass" style="border-bottom: 4px solid var(--primary);">
+            <span class="prob-val" style="color: var(--primary);">{{ analysis.home }}%</span>
+            <span style="font-weight: 800;">{{ match.home_team }} WIN</span>
+        </div>
+        <div class="prob-box glass" style="border-bottom: 4px solid #fff;">
+            <span class="prob-val">{{ analysis.draw }}%</span>
+            <span style="font-weight: 800;">DRAW</span>
+        </div>
+        <div class="prob-box glass" style="border-bottom: 4px solid var(--secondary);">
+            <span class="prob-val" style="color: var(--secondary);">{{ analysis.away }}%</span>
+            <span style="font-weight: 800;">{{ match.away_team }} WIN</span>
+        </div>
+    </div>
+
+    <div class="glass" style="padding: 2rem; background: rgba(255,255,255,0.02);">
+        <h3 style="margin-bottom: 1rem;">Why these numbers?</h3>
+        <p style="line-height: 1.6; opacity: 0.8;">
+            {{ analysis.explanation }} Our models analyze the <strong>slope of attacking pressure</strong> and the <strong>defensive resilience</strong> over the last 15 minutes. 
+            Momentum is currently favoring the {% if analysis.home > analysis.away %}home{% else %}away{% endif %} side.
+        </p>
+        <div style="margin-top: 1.5rem; padding: 1rem; border-radius: 12px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
+            <p style="font-size: 0.8rem; color: #ef4444; font-weight: 700; margin: 0;">
+                ⚠️ DISCLAIMER: These are mathematical probabilities only. Sport is unpredictable. Do not bet what you cannot afford to lose.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <a href="{{ url_for('match_dashboard', match_id=match.id) }}" class="btn btn-primary">RETURN TO MATCH TRACKER</a>
+</div>
+{% endblock %}

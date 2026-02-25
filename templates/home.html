@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero">
+    <h1>Real-Time Momentum Tracker</h1>
+    <p style="font-size: 1.2rem; opacity: 0.8; margin-bottom: 2.5rem;">
+        Experience the game beyond the score. Deterministic pressure index and AI-driven forecasts.
+    </p>
+    <a href="{{ url_for('live_matches') }}" class="btn btn-primary" style="font-size: 1.1rem;">EXPLORE LIVE MATCHES 🔥</a>
+    
+    <div style="margin-top: 2rem;" class="glass">
+        <div style="padding: 1rem;">
+            <p><strong>API Connection Status:</strong> 
+                <span class="badge {% if api_status.status == 'Healthy' %}badge-live{% else %}low{% endif %}" style="padding: 5px 10px;">
+                    {{ api_status.status }}
+                </span>
+            </p>
+            {% if api_status.error %}
+                <p style="color: #ef4444; font-size: 0.9rem; margin-top: 0.5rem;">⚠️ {{ api_status.error }}</p>
+                <p style="font-size: 0.85rem; margin-top: 0.5rem;">
+                    Get a free API key at <a href="https://www.football-data.org/client/register" target="_blank" style="color: #60a5fa; text-decoration: underline;">football-data.org</a>
+                </p>
+            {% endif %}
+            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 0.5rem;">Last checked: {{ api_status.last_check or 'Never' }}</p>
+        </div>
+    </div>
+</div>
+
+<div class="match-grid">
+    <div class="match-card glass">
+        <h3>⚽ Live Analytics</h3>
+        <p>Real-time polling from football-data.org with sub-minute updates.</p>
+    </div>
+    <div class="match-card glass">
+        <h3>📈 Momentum Charts</h3>
+        <p>Server-side generated SVG visualizations showing the flow of pressure.</p>
+    </div>
+    <div class="match-card glass">
+        <h3>🚀 Smart Forecast</h3>
+        <p>Entropy-based trend analysis to predict the next 10 minutes of play.</p>
+    </div>
+</div>
+{% endblock %}

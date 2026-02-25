@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block head %}
+<meta http-equiv="refresh" content="30">
+{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 3rem; text-align: center;">
+    <h1 class="text-gradient" style="font-size: 3rem; margin-bottom: 0.5rem;">Match Center</h1>
+    <p style="opacity: 0.6; font-weight: 600; text-transform: uppercase; letter-spacing: 2px;">Real-time Pressure Analytics</p>
+</div>
+
+{% if featured_match %}
+<!-- Featured Hero Match -->
+<div class="glass hero-match mb-2">
+    <div class="team-big">
+        <div style="font-size: 3rem;">🏟️</div>
+        <h2>{{ featured_match.home_team }}</h2>
+    </div>
+    <div class="text-center">
+        <div class="badge-live mb-2">LIVE</div>
+        <div class="score-hero">{{ featured_match.score_home }} - {{ featured_match.score_away }}</div>
+        <div style="font-size: 0.8rem; opacity: 0.6; font-weight: 800; margin-top: 1rem;">
+            UPDATED {{ featured_match.seconds_ago }}S AGO
+        </div>
+        <div class="mt-2" style="max-width: 200px; margin-inline: auto;">
+            {{ featured_match.sparkline|safe }}
+        </div>
+    </div>
+    <div class="team-big">
+        <div style="font-size: 3rem;">🏟️</div>
+        <h2>{{ featured_match.away_team }}</h2>
+    </div>
+</div>
+{% endif %}
+
+{% if not matches %}
+<div class="glass" style="padding: 5rem; text-align: center;">
+    <h2 style="font-size: 2rem; margin-bottom: 1rem;">Stadium is Quiet... 🤫</h2>
+    <p style="opacity: 0.7; margin-bottom: 2rem;">No matches are live right now. Catch the next kickoff!</p>
+    <a href="{{ url_for('upcoming_matches') }}" class="btn btn-primary">View Full Schedule</a>
+</div>
+{% else %}
+<!-- TikTok Style Grid -->
+<div class="match-grid">
+    {% for match in matches %}
+    <div class="glass match-card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="badge" style="background: rgba(var(--primary), 0.1); color: var(--primary); font-size: 0.6rem; letter-spacing: 1px;">
+                #{{ match.id }}
+            </span>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                {% if match.is_followed %}
+                <span style="font-size: 1.2rem;">⭐️</span>
+                {% endif %}
+                <span class="badge badge-live" style="font-size: 0.6rem;">IN-PLAY</span>
+            </div>
+        </div>
+
+        <div class="card-teams">
+            <div class="card-team">
+                <div style="font-size: 1.5rem; font-weight: 900;">{{ match.home_team }}</div>
+            </div>
+            <div class="card-score">{{ match.score_home }} - {{ match.score_away }}</div>
+            <div class="card-team">
+                <div style="font-size: 1.5rem; font-weight: 900;">{{ match.away_team }}</div>
+            </div>
+        </div>
+
+        <!-- Momentum Bar -->
+        <div class="momentum-bar">
+            <!-- Simple heuristic: 50/50 starting point -->
+            <div class="momentum-fill" style="width: 50%; background: var(--primary);"></div>
+            <div class="momentum-fill" style="width: 50%; background: var(--secondary);"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem;">
+            <div style="height: 30px; opacity: 0.8;">
+                {{ match.sparkline|safe }}
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <a href="{{ url_for('predict', match_id=match.id) }}" class="btn" style="background: rgba(255,255,255,0.05); padding: 0.5rem 1rem; font-size: 0.7rem;">PREDICT</a>
+                <a href="{{ url_for('match_dashboard', match_id=match.id) }}" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.7rem;">VIEW MATCH</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

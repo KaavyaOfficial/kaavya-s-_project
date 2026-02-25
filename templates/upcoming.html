@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 4rem; text-align: center;">
+    <h1 class="text-gradient" style="font-size: 3rem;">Match Schedule</h1>
+    <p style="opacity: 0.6; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">Next 7 Days of Pulse-Pounding Action</p>
+</div>
+
+{% if not matches %}
+<div class="glass" style="padding: 5rem; text-align: center;">
+    <h2 style="font-size: 2rem; margin-bottom: 1rem;">The Calendar is Clear 🗓️</h2>
+    <p style="opacity: 0.7;">No top-tier matches scheduled this week. Take a breather.</p>
+</div>
+{% else %}
+<div class="match-grid">
+    {% for match in matches %}
+    <div class="glass match-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <span class="badge" style="background: rgba(var(--primary), 0.1); color: var(--primary); font-size: 0.6rem; letter-spacing: 1px;">
+                {{ match.competition.name }}
+            </span>
+            <div style="font-weight: 800; font-size: 0.7rem; opacity: 0.6;">
+                {{ match.utcDate[:10] }} // {{ match.utcDate[11:16] }} UTC
+            </div>
+        </div>
+        
+        <div class="card-teams" style="margin-bottom: 1.5rem;">
+            <div class="card-team">
+                <div style="font-size: 1.2rem; font-weight: 800;">{{ match.homeTeam.name }}</div>
+            </div>
+            <div style="font-weight: 900; opacity: 0.2; font-size: 1.5rem;">VS</div>
+            <div class="card-team">
+                <div style="font-size: 1.2rem; font-weight: 800;">{{ match.awayTeam.name }}</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 1rem;">
+            <span class="btn glass" style="font-size: 0.7rem; padding: 0.6rem 1.2rem; opacity: 0.5; cursor: default;">SCHEDULED</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MOMENTUM FC{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    {% block head %}{% endblock %}
+</head>
+<body class="{{ theme }}">
+    <nav class="glass">
+        <div class="logo">
+            <a href="{{ url_for('home') }}" style="text-decoration: none; color: inherit; font-size: 1.5rem; font-weight: 900; letter-spacing: -1px;">
+                MOMENTUM <span class="text-gradient">FC</span>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="{{ url_for('live_matches') }}" class="{% if request.path == url_for('live_matches') %}active{% endif %}">Live</a>
+            <a href="{{ url_for('upcoming_matches') }}" class="{% if request.path == url_for('upcoming_matches') %}active{% endif %}">Schedule</a>
+            <a href="{{ url_for('predict_page') }}" class="{% if request.path == url_for('predict_page') %}active{% endif %}">Predict</a>
+            <a href="{{ url_for('leaderboard') }}" class="{% if request.path == url_for('leaderboard') %}active{% endif %}">Leaderboard</a>
+            <a href="{{ url_for('about') }}" class="{% if request.path == url_for('about') %}active{% endif %}">About</a>
+        </div>
+        <div class="theme-toggle">
+            <form action="{{ url_for('set_theme') }}" method="POST">
+                {% if theme == 'dark' %}
+                    <input type="hidden" name="theme" value="light">
+                    <button type="submit" class="btn" style="background: rgba(255,255,255,0.05); color: #fff; padding: 0.5rem 1rem; border-radius: 99px;">☀️</button>
+                {% else %}
+                    <input type="hidden" name="theme" value="dark">
+                    <button type="submit" class="btn" style="background: rgba(0,0,0,0.05); color: #000; padding: 0.5rem 1rem; border-radius: 99px;">🌙</button>
+                {% endif %}
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer style="margin-top: 5rem; padding: 3rem; text-align: center; opacity: 0.4; font-size: 0.8rem;">
+        <p>&copy; 2026 MOMENTUM FC // BUILT FOR THE NEXT GENERATION ⚽🚀</p>
+    </footer>
+</body>
+</html>

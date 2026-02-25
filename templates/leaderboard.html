@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 4rem; text-align: center;">
+    <h1 class="text-gradient" style="font-size: 4rem; letter-spacing: -3px;">HALL OF FAME</h1>
+    <p style="opacity: 0.6; font-weight: 800; text-transform: uppercase;">Top Predictive Talent in the League</p>
+</div>
+
+<div class="glass" style="padding: 2rem; overflow: hidden;">
+    <table style="width: 100%; border-collapse: separate; border-spacing: 0 0.8rem;">
+        <thead>
+            <tr style="text-align: left; opacity: 0.5; font-size: 0.7rem; font-weight: 900; letter-spacing: 2px;">
+                <th style="padding: 1rem;">RANK</th>
+                <th>PLAYER</th>
+                <th style="text-align: right; padding-right: 2rem;">VIBE POINTS</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr class="glass" style="{% if user.username == current_username %}border: 2px solid var(--primary); background: rgba(139, 92, 246, 0.1);{% endif %}">
+                <td style="padding: 1.5rem; border-radius: 16px 0 0 16px; font-weight: 900; font-family: 'Outfit'; font-size: 1.2rem;">
+                    {% if loop.index == 1 %}🥇
+                    {% elif loop.index == 2 %}🥈
+                    {% elif loop.index == 3 %}🥉
+                    {% else %}#{{ loop.index }}
+                    {% endif %}
+                </td>
+                <td style="font-weight: 700;">
+                    {{ user.username }}
+                    {% if user.points > 500 %}
+                    <span class="badge" style="background: linear-gradient(90deg, #f59e0b, #ef4444); color: white; margin-left: 0.5rem;">🔥 HOT STREAK</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: right; padding-right: 2rem; border-radius: 0 16px 16px 0; font-weight: 900; color: var(--accent); font-size: 1.2rem;">
+                    {{ user.points }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if not users %}
+<div class="glass" style="padding: 5rem; text-align: center;">
+    <p style="opacity: 0.6;">The league is fresh. Be the first to claim the throne!</p>
+</div>
+{% endif %}
+{% endblock %}

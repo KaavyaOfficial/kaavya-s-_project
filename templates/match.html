@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block head %}
+<meta http-equiv="refresh" content="30">
+{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+    <div>
+        <a href="{{ url_for('live_matches') }}" style="text-decoration: none; font-weight: 800; font-size: 0.8rem; color: var(--primary);">← BACK TO LIVE</a>
+        <h1 style="font-size: 3.5rem; margin: 0.5rem 0;">{{ match.name }}</h1>
+    </div>
+    <div style="text-align: right;">
+        <a href="{{ url_for('toggle_follow', match_id=match.id) }}" class="btn {% if is_followed %}btn-primary{% else %}glass{% endif %}" style="padding: 0.8rem 1.5rem;">
+            {% if is_followed %}⭐️ FOLLOWING{% else %}☆ FOLLOW MATCH{% endif %}
+        </a>
+    </div>
+</div>
+
+<div class="glass" style="padding: 3rem; margin-bottom: 2rem; position: relative; overflow: hidden;">
+    <div style="position: absolute; top: 0; right: 0; padding: 1rem;">
+        <span class="badge badge-live">IN-PLAY</span>
+    </div>
+    
+    <div style="display: flex; justify-content: center; align-items: center; gap: 3rem; margin-bottom: 3rem;">
+        <div class="text-center">
+            <div style="font-size: 4rem;">🏟️</div>
+            <h2 style="font-size: 2rem;">{{ match.home_team }}</h2>
+        </div>
+        <div style="font-size: 6rem; font-weight: 900; font-family: 'Outfit';">{{ match.score_home }} - {{ match.score_away }}</div>
+        <div class="text-center">
+            <div style="font-size: 4rem;">🏟️</div>
+            <h2 style="font-size: 2rem;">{{ match.away_team }}</h2>
+        </div>
+    </div>
+
+    <!-- Momentum Visualization -->
+    <div style="margin-top: 3rem;">
+        <h3 style="text-transform: uppercase; letter-spacing: 2px; opacity: 0.6; font-size: 0.8rem; margin-bottom: 1rem;">Momentum Trend</h3>
+        <div class="glass" style="padding: 1rem; background: rgba(0,0,0,0.2);">
+            {{ chart_svg|safe }}
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 1rem; font-size: 0.8rem; font-weight: 700;">
+            <span style="color: var(--primary);">ATTACKING INTENSITY</span>
+            <span style="opacity: 0.5;">LAST 90'</span>
+        </div>
+    </div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 2rem;">
+    <!-- Timeline -->
+    <div class="glass" style="padding: 2rem;">
+        <h3 style="margin-bottom: 2rem;">Match Timeline</h3>
+        <div class="timeline">
+            {% for event in events %}
+            <div class="timeline-item">
+                <div style="font-weight: 900; color: var(--primary);">{{ event.time }}</div>
+                <div style="font-weight: 700; margin: 0.2rem 0;">{{ event.event }}</div>
+                <div style="font-size: 0.9rem; opacity: 0.6;">{{ event.desc }}</div>
+            </div>
+            {% endfor %}
+            <div class="timeline-item">
+                <div style="font-weight: 900; color: var(--accent);">0'</div>
+                <div style="font-weight: 700;">Kickoff</div>
+                <div style="font-size: 0.9rem; opacity: 0.6;">The battle begins.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Predictor Hook -->
+    <div style="display: flex; flex-direction: column; gap: 2rem;">
+        <div class="glass" style="padding: 2rem; background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(139, 92, 246, 0.1)); border: 2px solid var(--accent);">
+            <h3 style="margin-bottom: 1rem;">AI Forecast</h3>
+            <div style="font-size: 2.5rem; font-weight: 900; color: var(--accent);">{{ forecast.probability }}%</div>
+            <p style="font-weight: 700; margin-bottom: 1rem;">Confidence: {{ forecast.level }}</p>
+            <p style="font-size: 0.9rem; opacity: 0.8; margin-bottom: 1.5rem;">{{ forecast.explanation }}</p>
+            <a href="{{ url_for('predict', match_id=match.id) }}" class="btn btn-primary" style="width: 100%; justify-content: center;">VIEW DEEP ANALYSIS</a>
+        </div>
+
+        <div class="glass" style="padding: 2rem;">
+            <h3>Quick Stats</h3>
+            <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Pressure Index</span>
+                    <span style="font-weight: 800;">{{ snapshots[0].pressure_index|round(1) if snapshots else 0 }}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Match Minute</span>
+                    <span style="font-weight: 800;">{{ snapshots[0].minute if snapshots else 0 }}'</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

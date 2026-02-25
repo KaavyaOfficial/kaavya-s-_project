@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="margin-bottom: 4rem; text-align: center;">
+    <h1 class="text-gradient" style="font-size: 3.5rem;">Join the Arena</h1>
+    <p style="opacity: 0.6; font-weight: 800; text-transform: uppercase;">Predict Matches. Earn Points. Dominate.</p>
+</div>
+
+<div class="glass" style="max-width: 500px; margin: 0 auto; padding: 3rem;">
+    <h2 style="margin-bottom: 2rem;">Create Identity</h2>
+    <form action="{{ url_for('predict_page') }}" method="POST">
+        <div style="margin-bottom: 2rem;">
+            <label style="display: block; margin-bottom: 0.8rem; font-weight: 800; font-size: 0.8rem; opacity: 0.6;">USERNAME</label>
+            <input type="text" name="username" placeholder="VibeMaster69" 
+                   style="width: 100%; padding: 1rem; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; font-size: 1.1rem;" 
+                   required minlength="3" maxlength="20">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.2rem; font-size: 1rem;">ENTER THE LEAGUE</button>
+    </form>
+    <p style="margin-top: 2rem; font-size: 0.8rem; opacity: 0.5; text-align: center;">
+        By entering, you agree to play with maximum vibes. No self-referral allowed.
+    </p>
+</div>
+{% endblock %}
